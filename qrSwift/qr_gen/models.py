@@ -11,12 +11,18 @@ from segno import helpers
 from qr_code.qrcode import maker
 from qr_code.qrcode.utils import QRCodeOptions
 from django.core.files.base import ContentFile
+from django.db import models
+from django.contrib.auth.models import User
+
 
 import random
 
 # Create your models here.
 class Qr(models.Model):
     name = models.CharField(max_length=200, default=date.today())
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="qrs", null=True,
+    )
     qr_code = models.ImageField(upload_to='qr_codes', blank=True) # Field To store qr_code field
     qr_type = models.CharField(max_length=12, choices=[(qr, qr.value) for qr in QrType], default=QrType.URL)
     content = models.CharField(max_length=200, blank=qr_type == QrType.WIFI)
